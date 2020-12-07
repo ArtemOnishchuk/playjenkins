@@ -1,38 +1,61 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: webserver
   labels:
-    app: myweb
-  name: myweb
+    app: nginx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: myweb
+      app: nginx
   template:
     metadata:
       labels:
-        app: myweb
+        app: nginx
     spec:
       containers:
-      - image: 172.16.0.109:31320/test/web:1
-        imagePullPolicy: Always
-        name: myweb
-
+      - name: nginx
+        image: 172.16.0.109:31320/test/web:8
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  name: web-service
   labels:
-    app: myweb
-  name: myweb
+    run: web-service
 spec:
+  type: LoadBalancer
   ports:
-  - nodePort: 32223
-    port: 80
+  - port: 80
     protocol: TCP
-    targetPort: 80
   selector:
-    app: myweb
-  type: NodePort
+    app: nginx
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-sa
+spec:
+  backend:
+    serviceName: default-http-backend
+    servicePort: 80
+  rules:
+  - host: app.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web-service
+          servicePort: 80
+
