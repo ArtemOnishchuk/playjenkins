@@ -5,7 +5,28 @@ pipeline {
     dockerImage = ""
   }
 
-  agent any
+  agent {
+    kubernetes {
+      label 'sample-app'
+      idleMinutes 5 
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins-slave
+  namespace: ci-cd
+spec:
+  containers:
+  - name: jenkins-slave
+    image: joao29a/jnlp-slave-alpine-docker:latest
+    imagePullPolicy: IfNotPresent
+    command:
+    - cat
+    tty: true
+  restartPolicy: Always
+"""
+}
+  }
 
   stages {
 
