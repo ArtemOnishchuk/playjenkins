@@ -5,8 +5,36 @@ pipeline {
     dockerImage = ""
   }
 
-  agent any
-
+  agent {
+    kubernetes {
+      label 'sample-app'
+      idleMinutes 5 
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curltest
+  namespace: ci-cd
+spec:
+  containers:
+  - name: curltest
+    image: tutum/curl
+    imagePullPolicy: IfNotPresent
+    command:
+    - cat
+    tty: true
+  restartPolicy: Always
+    volumeMounts:
+      - name: docker-sock
+        mountPath: /var/run
+  volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run
+"""
+}
+  }
+  
   stages {
 
     stage('Checkout Source') {
