@@ -13,12 +13,12 @@ pipeline {
 apiVersion: v1
 kind: Pod
 metadata:
-  name: curltest
+  name: jenkins-slave
   namespace: ci-cd
 spec:
   containers:
-  - name: curltest
-    image: tutum/curl
+  - name: jenkins-slave
+    image: joao29a/jnlp-slave-alpine-docker:latest
     imagePullPolicy: IfNotPresent
     command:
     - cat
