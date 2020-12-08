@@ -28,9 +28,9 @@ spec:
       - name: docker-sock
         mountPath: /var/run
   volumes:
-        - name: docker-sock
-          hostPath:
-            path: /var/run
+    - name: docker-sock
+      hostPath:
+        path: /var/run
 """
 }
   }
