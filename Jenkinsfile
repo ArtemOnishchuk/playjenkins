@@ -39,15 +39,18 @@ spec:
 
     stage('Checkout Source') {
       steps {
+        
         git 'https://github.com/ArtemOnishchuk/playjenkins.git'
       }
     }
 
     stage('Build image') {
       steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
-        }
+        container('jenkins-slave') {
+          script {
+            dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          }
+        }  
       }
     }
 
