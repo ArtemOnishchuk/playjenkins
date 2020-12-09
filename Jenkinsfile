@@ -20,10 +20,6 @@ spec:
   - name: jenkins-slave
     image: joao29a/jnlp-slave-alpine-docker:latest
     imagePullPolicy: IfNotPresent
-    command:
-    - cat
-    tty: true
-  restartPolicy: Always
     volumeMounts:
       - name: docker-sock
         mountPath: /var/run
@@ -31,6 +27,7 @@ spec:
     - name: docker-sock
       hostPath:
         path: /var/run
+  restartPolicy: Always
 """
 }
   }
