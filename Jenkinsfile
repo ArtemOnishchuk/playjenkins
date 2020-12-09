@@ -27,7 +27,6 @@ spec:
     - name: docker-sock
       hostPath:
         path: /var/run
-  restartPolicy: Always
 """
 }
   }
