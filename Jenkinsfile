@@ -5,35 +5,7 @@ pipeline {
     dockerImage = ""
   }
 
-  agent {
-    kubernetes {
-      label 'sample-app6'
-      idleMinutes 5 
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  name: jenkins-slave
-  namespace: ci-cd
-spec:
-  containers:
-  - name: jenkins-slave
-    image: joao29a/jnlp-slave-alpine-docker:latest
-    imagePullPolicy: IfNotPresent
-    volumeMounts:
-      - name: docker-sock
-        mountPath: /var/run/docker.sock
-    command:
-    - cat
-    tty: true
-  volumes:
-    - name: docker-sock
-      hostPath:
-        path: /var/run/docker.sock
-  restartPolicy: Always
-"""
-}
-  }
+ agent any
   
   stages {
 
@@ -45,11 +17,10 @@ spec:
     }
 
     stage('Build image') {
-      steps{
-        container('jenkins-slave') {
-          script {
-            dockerImage = docker.build registry + ":$BUILD_NUMBER"
-          }
+      steps  
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          
         }  
       }
     }
