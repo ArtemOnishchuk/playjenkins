@@ -7,7 +7,7 @@ pipeline {
 
   agent {
     kubernetes {
-      label 'sample-app'
+      label 'sample-app6'
       idleMinutes 5 
       yaml """
 apiVersion: v1
@@ -22,11 +22,15 @@ spec:
     imagePullPolicy: IfNotPresent
     volumeMounts:
       - name: docker-sock
-        mountPath: /var/run
+        mountPath: /var/run/docker.sock
+    command:
+    - cat
+    tty: true
   volumes:
     - name: docker-sock
       hostPath:
-        path: /var/run
+        path: /var/run/docker.sock
+  restartPolicy: Always
 """
 }
   }
